@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo de Áreas - Arquitetura</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <h1>Cálculo de Áreas</h1>
+    <form id="areaForm">
+        <label for="ambienteNome">Nome do Ambiente:</label>
+        <input type="text" id="ambienteNome" placeholder="Digite o nome do ambiente" required><br><br>
+
+        <label for="areaNome">Nome da Superfície:</label>
+        <input type="text" id="areaNome" placeholder="Ex: Piso, Parede Frontal" required><br><br>
+
+        <label for="altura">Altura (em metros):</label>
+        <input type="text" id="altura" placeholder="Altura" required><br><br>
+
+        <label for="largura">Largura (em metros):</label>
+        <input type="text" id="largura" placeholder="Largura" required><br><br>
+
+        <button type="button" id="addArea">Adicionar Área</button>
+        <button type="button" id="removeAmbiente">Remover Ambiente</button>
+    </form>
+
+    <h2>Ambientes Cadastrados</h2>
+    <div id="ambientesContainer">
+        <!-- Ambientes serão adicionados aqui dinamicamente -->
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
