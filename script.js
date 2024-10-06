@@ -2,8 +2,8 @@ document.getElementById('addArea').addEventListener('click', function() {
     // Obtendo valores do formulário
     const ambienteNome = document.getElementById('ambienteNome').value;
     const areaNome = document.getElementById('areaNome').value;
-    const altura = document.getElementById('altura').value;
-    const largura = document.getElementById('largura').value;
+    const altura = document.getElementById('altura').value.replace(',', '.'); // Converte a vírgula em ponto
+    const largura = document.getElementById('largura').value.replace(',', '.'); // Converte a vírgula em ponto
 
     // Validação do nome do ambiente: Apenas letras
     if (!/^[a-zA-Z\s]+$/.test(ambienteNome)) {
@@ -11,14 +11,15 @@ document.getElementById('addArea').addEventListener('click', function() {
         return;
     }
 
-    // Validação da altura e largura: Apenas números com até 3 dígitos
-    if (!/^\d{1,3}(?:\.\d{1,2})?$/.test(altura) || !/^\d{1,3}(?:\.\d{1,2})?$/.test(largura)) {
-        alert('Altura e Largura devem ser números de até 3 dígitos e podem incluir até 2 casas decimais.');
+    // Validação da altura e largura: Apenas números com até 3 dígitos e até 2 casas decimais
+    if (!/^\d{1,3}(,\d{1,2})?$/.test(document.getElementById('altura').value) || 
+        !/^\d{1,3}(,\d{1,2})?$/.test(document.getElementById('largura').value)) {
+        alert('Altura e Largura devem ser números de até 3 dígitos e podem incluir até 2 casas decimais com vírgula.');
         return;
     }
 
     // Calculando a área
-    const areaCalculada = (parseFloat(altura) * parseFloat(largura)).toFixed(2);
+    const areaCalculada = (parseFloat(altura) * parseFloat(largura)).toFixed(2).replace('.', ','); // Converte o ponto de volta para vírgula
 
     // Adicionando o ambiente e a área calculada
     let ambienteDiv = document.getElementById(ambienteNome);
@@ -44,7 +45,7 @@ document.getElementById('addArea').addEventListener('click', function() {
     areaDiv.className = 'area';
 
     const areaContent = document.createElement('span');
-    areaContent.textContent = `${areaNome}: ${areaCalculada} m² (Altura: ${altura}m, Largura: ${largura}m)`;
+    areaContent.textContent = `${areaNome}: ${areaCalculada} m² (Altura: ${altura.replace('.', ',')}m, Largura: ${largura.replace('.', ',')}m)`;
 
     const removeBtn = document.createElement('button');
     removeBtn.className = 'removeAreaBtn';
