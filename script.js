@@ -44,8 +44,11 @@ document.getElementById('addArea').addEventListener('click', function() {
     const areaDiv = document.createElement('div');
     areaDiv.className = 'area';
 
+    // Calculando a área com 15% de adição
+    const areaComAdicao = (parseFloat(areaCalculada.replace(',', '.')) * 1.15).toFixed(2).replace('.', ',');
+
     const areaContent = document.createElement('span');
-    areaContent.textContent = `${areaNome}: ${areaCalculada} m² (Altura: ${altura.replace('.', ',')}m, Largura: ${largura.replace('.', ',')}m)`;
+    areaContent.textContent = `${areaNome}: ${areaCalculada} m² (Altura: ${altura.replace('.', ',')}m, Largura: ${largura.replace('.', ',')}m) - (área com 15% de adição do material: ${areaComAdicao} m²)`;
 
     const removeBtn = document.createElement('button');
     removeBtn.className = 'removeAreaBtn';
