@@ -71,59 +71,48 @@ h2 {
         min-width: 300px;
     }
 }
-
 /* Layout para telas pequenas */
 @media (max-width: 767px) {
     body {
         padding: 10px;
     }
-    
     h1 {
         font-size: 1.5em;
         margin-bottom: 20px;
     }
-    
     h2 {
         font-size: 1.2em;
         margin-bottom: 15px;
     }
-    
     .main-container {
         gap: 15px;
     }
-    
     form {
         max-width: 100%;
     }
-    
     label {
         font-size: 0.9em;
         margin-bottom: 2px;
     }
-    
     input {
         padding: 6px;
         margin-bottom: 8px;
         font-size: 0.9em;
     }
-    
     button {
         padding: 8px 12px;
         margin-right: 5px;
         margin-top: 3px;
         font-size: 0.9em;
     }
-    
     .ambiente {
         padding: 8px;
         margin-bottom: 8px;
     }
-    
     .ambiente h3 {
         font-size: 1em;
         margin: 0 0 8px 0;
     }
-    
     .area {
         padding-left: 10px;
         margin-bottom: 4px;
@@ -131,7 +120,6 @@ h2 {
         align-items: flex-start;
         gap: 5px;
     }
-    
     .area span {
         font-size: 0.85em;
         line-height: 1.3;

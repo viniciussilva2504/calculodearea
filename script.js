@@ -1,3 +1,87 @@
+// Objeto para armazenar todos os ambientes e suas áreas
+let ambientesData = {};
+
+// Função para salvar dados no localStorage
+function salvarDados() {
+    localStorage.setItem('ambientesCalculoArea', JSON.stringify(ambientesData));
+}
+
+// Função para carregar dados do localStorage
+function carregarDados() {
+    const dadosSalvos = localStorage.getItem('ambientesCalculoArea');
+    if (dadosSalvos) {
+        ambientesData = JSON.parse(dadosSalvos);
+        renderizarAmbientes();
+    }
+}
+
+// Função para renderizar todos os ambientes salvos
+function renderizarAmbientes() {
+    const container = document.getElementById('ambientesContainer');
+    container.innerHTML = ''; // Limpa o container
+
+    for (const ambienteNome in ambientesData) {
+        const ambienteDiv = criarAmbienteDiv(ambienteNome);
+        container.appendChild(ambienteDiv);
+
+        // Adiciona todas as áreas do ambiente
+        ambientesData[ambienteNome].forEach(areaData => {
+            const areaDiv = criarAreaDiv(ambienteNome, areaData);
+            ambienteDiv.appendChild(areaDiv);
+        });
+    }
+}
+
+// Função para criar div do ambiente
+function criarAmbienteDiv(ambienteNome) {
+    const ambienteDiv = document.createElement('div');
+    ambienteDiv.id = ambienteNome;
+    ambienteDiv.className = 'ambiente';
+    ambienteDiv.innerHTML = `<h3>Ambiente: ${ambienteNome}</h3>`;
+    return ambienteDiv;
+}
+
+// Função para criar div da área
+function criarAreaDiv(ambienteNome, areaData) {
+    const areaDiv = document.createElement('div');
+    areaDiv.className = 'area';
+
+    const areaContent = document.createElement('span');
+    areaContent.textContent = `${areaData.nome}: ${areaData.areaCalculada} m² (Altura: ${areaData.altura}m, Largura: ${areaData.largura}m) - (área com 15% de adição do material: ${areaData.areaComAdicao} m²)`;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'removeAreaBtn';
+    removeBtn.textContent = 'Remover Área';
+
+    // Evento para remover a área
+    removeBtn.addEventListener('click', function() {
+        removerArea(ambienteNome, areaData);
+        areaDiv.remove();
+    });
+
+    areaDiv.appendChild(areaContent);
+    areaDiv.appendChild(removeBtn);
+
+    return areaDiv;
+}
+
+// Função para remover área dos dados
+function removerArea(ambienteNome, areaData) {
+    ambientesData[ambienteNome] = ambientesData[ambienteNome].filter(area => 
+        !(area.nome === areaData.nome && 
+          area.altura === areaData.altura && 
+          area.largura === areaData.largura)
+    );
+
+    // Se o ambiente ficar sem áreas, remove o ambiente
+    if (ambientesData[ambienteNome].length === 0) {
+        delete ambientesData[ambienteNome];
+        document.getElementById(ambienteNome)?.remove();
+    }
+
+    salvarDados();
+}
+
 document.getElementById('addArea').addEventListener('click', function() {
     // Obtendo valores do formulário
     const ambienteNome = document.getElementById('ambienteNome').value;
@@ -19,51 +103,43 @@ document.getElementById('addArea').addEventListener('click', function() {
     }
 
     // Calculando a área
-    const areaCalculada = (parseFloat(altura) * parseFloat(largura)).toFixed(2).replace('.', ','); // Converte o ponto de volta para vírgula
+    const areaCalculada = (parseFloat(altura) * parseFloat(largura)).toFixed(2).replace('.', ',');
+    const areaComAdicao = (parseFloat(altura) * parseFloat(largura) * 1.15).toFixed(2).replace('.', ',');
 
-    // Adicionando o ambiente e a área calculada
-    let ambienteDiv = document.getElementById(ambienteNome);
-
-    if (!ambienteDiv) {
-        // Criando um novo ambiente
-        ambienteDiv = document.createElement('div');
-        ambienteDiv.id = ambienteNome;
-        ambienteDiv.className = 'ambiente';
-        ambienteDiv.innerHTML = `<h3>Ambiente: ${ambienteNome}</h3>`;
-        document.getElementById('ambientesContainer').appendChild(ambienteDiv);
+    // Inicializa o ambiente se não existir
+    if (!ambientesData[ambienteNome]) {
+        ambientesData[ambienteNome] = [];
     }
 
     // Verifica se o ambiente já tem 20 áreas
-    const areas = ambienteDiv.getElementsByClassName('area');
-    if (areas.length >= 20) {
+    if (ambientesData[ambienteNome].length >= 20) {
         alert('Um ambiente pode ter no máximo 20 áreas cadastradas.');
         return;
     }
 
-    // Criando a nova área calculada com botão de remoção
-    const areaDiv = document.createElement('div');
-    areaDiv.className = 'area';
+    // Cria objeto com dados da área
+    const areaData = {
+        nome: areaNome,
+        altura: altura.replace('.', ','),
+        largura: largura.replace('.', ','),
+        areaCalculada: areaCalculada,
+        areaComAdicao: areaComAdicao
+    };
 
-    // Calculando a área com 15% de adição
-    const areaComAdicao = (parseFloat(areaCalculada.replace(',', '.')) * 1.15).toFixed(2).replace('.', ',');
+    // Adiciona aos dados
+    ambientesData[ambienteNome].push(areaData);
 
-    const areaContent = document.createElement('span');
-    areaContent.textContent = `${areaNome}: ${areaCalculada} m² (Altura: ${altura.replace('.', ',')}m, Largura: ${largura.replace('.', ',')}m) - (área com 15% de adição do material: ${areaComAdicao} m²)`;
+    // Salva no localStorage
+    salvarDados();
 
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'removeAreaBtn';
-    removeBtn.textContent = 'Remover Área';
+    // Atualiza a interface
+    let ambienteDiv = document.getElementById(ambienteNome);
+    if (!ambienteDiv) {
+        ambienteDiv = criarAmbienteDiv(ambienteNome);
+        document.getElementById('ambientesContainer').appendChild(ambienteDiv);
+    }
 
-    // Evento para remover a área quando o botão for clicado
-    removeBtn.addEventListener('click', function() {
-        areaDiv.remove(); // Remove a área específica
-    });
-
-    // Adiciona o conteúdo da área e o botão de remoção ao div da área
-    areaDiv.appendChild(areaContent);
-    areaDiv.appendChild(removeBtn);
-
-    // Adiciona a nova área ao ambiente
+    const areaDiv = criarAreaDiv(ambienteNome, areaData);
     ambienteDiv.appendChild(areaDiv);
 
     // Limpa os campos do formulário
@@ -75,8 +151,16 @@ document.getElementById('removeAmbiente').addEventListener('click', function() {
     const ambienteDiv = document.getElementById(ambienteNome);
 
     if (ambienteDiv) {
-        ambienteDiv.remove(); // Remove o ambiente
+        // Remove dos dados
+        delete ambientesData[ambienteNome];
+        salvarDados();
+        
+        // Remove da interface
+        ambienteDiv.remove();
     } else {
         alert('Ambiente não encontrado.');
     }
 });
+
+// Carrega os dados salvos quando a página é carregada
+window.addEventListener('DOMContentLoaded', carregarDados);
